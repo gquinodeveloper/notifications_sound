@@ -5,9 +5,12 @@ SHA-256: 0A:FB:28:D8:9B:41:FF:AF:BE:98:4D:D0:9B:2C:73:BF:84:77:98:01:7A:D9:25:D7
 */
 
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/services.dart';
+import 'package:soundpool/soundpool.dart';
 
 class PushNotificationService {
   static FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -24,17 +27,19 @@ class PushNotificationService {
       badge: true,
       sound: true,
     );
+    playNotificationSound();
     _messageStreamController.add(message.data["product"] ?? "No title");
   }
 
   static Future _onMessageHandler(RemoteMessage message) async {
     print("onMessageHandler ${message.data}");
+
     messaging.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
     );
-
+    playNotificationSound();
     _messageStreamController.add(message.data["product"] ?? "No title");
   }
 
@@ -45,6 +50,7 @@ class PushNotificationService {
       badge: true,
       sound: true,
     );
+    playNotificationSound();
     _messageStreamController.add(message.data["product"] ?? "No title");
   }
 
@@ -59,6 +65,18 @@ class PushNotificationService {
 
     print("Toke device: $token");
     //Local Notification
+  }
+
+  static void playNotificationSound() async {
+    //final player = AudioCache();
+    //player.play('sounds/notificacion.mp3');
+    Soundpool pool = Soundpool(streamType: StreamType.notification);
+    int soundId = await rootBundle.load("assets/yape.mp3").then(
+      (ByteData soundData) {
+        return pool.load(soundData);
+      },
+    );
+    await pool.play(soundId);
   }
 
   static close() {

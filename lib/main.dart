@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
 
     PushNotificationService.messageStream.listen((message) {
       print("MyApp: $message");
-
+      //PushNotificationService.playNotificationSound();
       //Navegación faild
       //Navigator.pushNamed(context, "message");
 
